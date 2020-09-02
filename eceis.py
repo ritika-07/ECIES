@@ -37,7 +37,7 @@ def sumy_summary(docx):
 # Structure and Layout
 window = Tk()
 window.title("Encryption/Decryption using ECIES")
-window.geometry("900x600")
+window.geometry("950x750")
 window.config(background='black')
 
 style = ttk.Style(window)
@@ -56,9 +56,9 @@ tab6 = ttk.Frame(tab_control)
 
 # ADD TABS TO NOTEBOOK
 tab_control.add(tab1, text=f'{"Home":^40s}')
-tab_control.add(tab3, text=f'{"Plain Text":^30s}')
+tab_control.add(tab3, text=f'{"Plain Text":^39s}')
 tab_control.add(tab4, text=f'{"File Upload":^37s}')
-tab_control.add(tab5, text=f'{"URL analysis":^33s}')
+tab_control.add(tab5, text=f'{"URL analysis":^36s}')
 tab_control.add(tab6, text=f'{"Alternate Algorithms":^32s}')
 
 label1 = Label(tab1, text= 'About',padx=5, pady=5)
@@ -94,14 +94,14 @@ def clear_display_result():
 	tab3_display.delete('1.0',END)
 
 def save_summary():
-	raw_text = str(entry.get('1.0',tk.END))
+	raw_text = str(tab3_display.get('1.0',tk.END))
 	final_text = text_summarizer(raw_text)
-	file_name = 'CandidateInfo_'+ timestr + '.txt'
+	file_name = 'File_'+ timestr + '.txt'
 	with open(file_name, 'w') as f:
 		f.write(final_text)
 	result = '\nName of file: {}'.format(file_name)
 	tab3_display.insert(tk.END,result)
-############################################ fml
+############################################ 
 def encrypt_text():
 	raw_text = str(entry.get('1.0',tk.END))
 	raw_text= bytes(raw_text,'utf-8')
@@ -110,23 +110,23 @@ def encrypt_text():
 	pubKeyHex = privKey.public_key.to_hex()
 	encrypted = encrypt(pubKeyHex, raw_text)
 	encrypted = binascii.hexlify(encrypted)
-	result = '\nEncrypted text:{}'.format(encrypted)
+	result = 'Encrypted text:\n{}'.format(encrypted)
 	tab3_display.insert(tk.END,result)
-	result1 = '\nDecryption private key:{}'.format(privKeyHex)
+	result1 = '{}'.format(privKeyHex)
 	tab3_display1.insert(tk.END,result1)
 
 def decrypt_text():
 	encrypted = str(entry.get('1.0',tk.END))
 	encrypted= bytes(encrypted,'utf-8').strip()
 	encrypted = binascii.unhexlify(encrypted)
-	privKeyHex= str(tab3_display1.get('1.0',tk.END)).strip()
+	privKeyHex= str(tab4_display1.get('1.0',tk.END)).strip()
 	decrypted = decrypt(privKeyHex, encrypted)
-	result = '\nDecrypted text:{}'.format(decrypted)
+	result = 'Decrypted text:\n{}'.format(decrypted)
 	tab3_display.insert(tk.END,result)
 
 
 #####
-#Functions for candidate file tab
+#Functions for File tab
 def openfiles():
 	file1 = tkinter.filedialog.askopenfilename(filetypes=(("Text Files",".txt"),("All files","*")))
 	read_text = open(file1).read()
@@ -144,6 +144,29 @@ def get_file_summary():
 	raw_text = displayed_file.get('1.0',tk.END)
 	final_text = text_summarizer(raw_text)
 	result = '\nSummary:{}'.format(final_text)
+	tab4_display_text.insert(tk.END,result)
+
+############################################ 
+def encrypt_file():
+	raw_text = str(displayed_file .get('1.0',tk.END))
+	raw_text= bytes(raw_text,'utf-8')
+	privKey = generate_eth_key()
+	privKeyHex = privKey.to_hex()
+	pubKeyHex = privKey.public_key.to_hex()
+	encrypted = encrypt(pubKeyHex, raw_text)
+	encrypted = binascii.hexlify(encrypted)
+	result = 'Encrypted text:\n{}'.format(encrypted)
+	tab4_display_text.insert(tk.END,result)
+	result1 = '{}'.format(privKeyHex)
+	tab4_display1.insert(tk.END,result1)
+
+def decrypt_file():
+	encrypted = str(entry.get('1.0',tk.END))
+	encrypted= bytes(encrypted,'utf-8').strip()
+	encrypted = binascii.unhexlify(encrypted)
+	privKeyHex= str(tab3_display1.get('1.0',tk.END)).strip()
+	decrypted = decrypt(privKeyHex, encrypted)
+	result = 'Decrypted text:\n{}'.format(decrypted)
 	tab4_display_text.insert(tk.END,result)
 
 #####
@@ -205,7 +228,7 @@ def use_sumy():
 	tab6_display.insert(tk.END,result)
 		
 
-# Home tab
+################# Home tab
 about_label = Label(tab1,text="Our Project:\n\nEncryption/Decryption using ECIES",pady=5,padx=5)
 about_label.grid(column=1,row=1, pady=5)
 about_label = Label(tab1,text="Made By:\n1. Ritika Kayal - 18BCE2518\n2. Srinivas\n3. Amritanshi",pady=5,padx=5)
@@ -215,66 +238,81 @@ about_label.grid(column=1,row=2, pady=5)
 b0=Button(tab1,text="Close", width=12,command=window.destroy)
 b0.grid(row=4,column=1,padx=10,pady=10)
 
-# Plain text Tab
+##################### Plain text Tab
 l1=Label(tab3,text="Enter Text")
 l1.grid(row=2,column=1)
+entry=ScrolledText(tab3,height=8)
+entry.grid(row=3,column=0,columnspan=4,padx=5,pady=5)
 
-entry=ScrolledText(tab3,height=10)
-entry.grid(row=3,column=0,columnspan=3,padx=5,pady=5)
-
-# BUTTONS
 button1=Button(tab3,text="Reset",command=clear_text, width=12)
-button1.grid(row=5,column=0,padx=10,pady=10)
+button1.grid(row=4,column=0,padx=10,pady=10)
 
 button2=Button(tab3,text="Summarize",command=get_summary, width=12)
-button2.grid(row=5,column=1,padx=10,pady=10)
-
-button3=Button(tab3,text="Clear Result", command=clear_display_result, width=12)
-button3.grid(row=5,column=2,padx=10,pady=10)
-
-button4=Button(tab3,text="Save", command=save_summary, width=12)
-button4.grid(row=6,column=1,padx=10,pady=10)
+button2.grid(row=4,column=2,padx=10,pady=10)
 
 button5=Button(tab3,text="Encrypt", command=encrypt_text, width=12)
-button5.grid(row=7,column=0,padx=10,pady=10)
+button5.grid(row=5,column=0,padx=10,pady=10)
 
 button6=Button(tab3,text="Decrypt", command=decrypt_text, width=12)
-button6.grid(row=7,column=2,padx=10,pady=10)
+button6.grid(row=5,column=2,padx=10,pady=10)
 
-# Display Screen For Result
-tab3_display = ScrolledText(tab3, height=10)
-tab3_display.grid(row=8,column=0, columnspan=3,padx=5,pady=5)
+l1=Label(tab3,text="Decryption private key")
+l1.grid(row=6,column=1)
+tab3_display1 = ScrolledText(tab3, height=1)
+tab3_display1.grid(row=7,column=0, columnspan=3,padx=5,pady=5)
 
-tab3_display1 = ScrolledText(tab3, height=5)
-tab3_display1.grid(row=9,column=0, columnspan=3,padx=5,pady=5)
+l1=Label(tab3,text="Output")
+l1.grid(row=8,column=1)
+tab3_display = ScrolledText(tab3, height=8)
+tab3_display.grid(row=9,column=0, columnspan=3,padx=5,pady=5)
+
+button3=Button(tab3,text="Clear Result", command=clear_display_result, width=12)
+button3.grid(row=10,column=2,padx=10,pady=10)
+
+button4=Button(tab3,text="Save", command=save_summary, width=12)
+button4.grid(row=10,column=0,padx=10,pady=10)
 
 
-#Candidate file processing tab
+###################### File summarisation
 l1=Label(tab4,text="Open File To Summarize")
 l1.grid(row=1,column=1)
-
-displayed_file = ScrolledText(tab4,height=10)
+displayed_file = ScrolledText(tab4,height=8)
 displayed_file.grid(row=2,column=0, columnspan=3,padx=5,pady=5)
 
-# BUTTONS FOR SECOND TAB/FILE READING TAB
-b0=Button(tab4,text="Open File", width=12, command=openfiles)
-b0.grid(row=4,column=0,padx=10,pady=10)
 
-b1=Button(tab4,text="Reset", width=12,command=clear_text_file)
-b1.grid(row=4,column=1,padx=10,pady=10)
+b0=Button(tab4,text="Open File", width=12, command=openfiles)
+b0.grid(row=3,column=0,padx=10,pady=10)
 
 b2=Button(tab4,text="Summarize", width=12,command=get_file_summary)
-b2.grid(row=5,column=1,padx=10,pady=10)
+b2.grid(row=3,column=2,padx=10,pady=10)
 
-b3=Button(tab4,text="Clear Result", width=12,command=clear_text_result)
-b3.grid(row=4,column=2,padx=10,pady=10)
+button5=Button(tab4,text="Encrypt", command=encrypt_file, width=12)
+button5.grid(row=4,column=0,padx=10,pady=10)
 
+button6=Button(tab4,text="Decrypt", command=decrypt_file, width=12)
+button6.grid(row=4,column=2,padx=10,pady=10)
+
+l1=Label(tab4,text="Decryption private key")
+l1.grid(row=5,column=1)
+tab4_display1 = ScrolledText(tab4, height=1)
+tab4_display1.grid(row=6,column=0, columnspan=3,padx=5,pady=5)
+
+l1=Label(tab4,text="Output")
+l1.grid(row=7,column=1)
 # Display Screen
-tab4_display_text = ScrolledText(tab4,height=10)
-tab4_display_text.grid(row=7,column=0, columnspan=3,padx=5,pady=5)
+tab4_display_text = ScrolledText(tab4,height=8)
+tab4_display_text.grid(row=8,column=0, columnspan=3,padx=5,pady=5)
 
 # Allows you to edit
 tab4_display_text.config(state=NORMAL)
+
+b1=Button(tab4,text="Reset", width=12,command=clear_text_file)
+b1.grid(row=9,column=0,padx=10,pady=10)
+
+b3=Button(tab4,text="Clear Result", width=12,command=clear_text_result)
+b3.grid(row=9,column=2,padx=10,pady=10)
+
+
 
 
 # Candidate URL TAB
