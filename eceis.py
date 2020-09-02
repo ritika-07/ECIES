@@ -234,6 +234,8 @@ about_label = Label(tab1,text="Our Project:\n\nEncryption/Decryption using ECIES
 about_label.grid(column=1,row=1, pady=5)
 about_label = Label(tab1,text="Made By:\n1. Ritika Kayal - 18BCE2518\n2. Srinivas\n3. Amritanshi",pady=5,padx=5)
 about_label.grid(column=1,row=2, pady=5)
+about_label = Label(tab1,text="Abstract:\n With the rise of the internet, it has become more and more common for important, \ncritical documents to be shared through electronic means. \nThis means that it has become essential that documents and important \ndetails be kept confidential through the means of encryption. \nECC has risen in popularity and is dubbed “The Successor to RSA” \nas it is capable of achieving the same security of a 1024 bit RSA key \nwith just 208 bits. \nThus, it is the most optimal method for securing data against breaches and unauthorized access. \nDocuments have also grown in size over time \nas more detail can be stored due to larger and faster storage availability. \nExcessive amounts of time is wasted on reading filler and unnecessary content in documents \nto understand them and this becomes an issue as it limits the productivity of an individual. \nSkimming through large documents may also lead to users missing important details. \nHence a smart Natural Language Processing system that can parse through \ndocuments / text file / URLs can help save precious time \nwhile also conveying all the important facts/details needed.",pady=5,padx=5)
+about_label.grid(column=1,row=3, pady=5)
 
 #BUTTONS
 b0=Button(tab1,text="Close", width=12,command=window.destroy)
