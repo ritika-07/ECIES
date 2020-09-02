@@ -59,7 +59,6 @@ tab_control.add(tab1, text=f'{"Home":^40s}')
 tab_control.add(tab3, text=f'{"Plain Text":^39s}')
 tab_control.add(tab4, text=f'{"File Upload":^37s}')
 tab_control.add(tab5, text=f'{"URL analysis":^36s}')
-tab_control.add(tab6, text=f'{"Alternate Algorithms":^32s}')
 
 label1 = Label(tab1, text= 'About',padx=5, pady=5)
 label1.grid(column=1, row=0, pady=5)
@@ -72,9 +71,6 @@ label4.grid(column=1, row=0, pady=5)
 
 label5 = Label(tab5, text= 'URL summarisation and Ecryption/Decryption',padx=5, pady=5)
 label5.grid(column=1, row=0, pady=5)
-
-label6 = Label(tab6, text= 'Multi-Algorithm Comparison',padx=5, pady=5)
-label6.grid(column=1, row=0, pady=5)
 
 tab_control.pack(expand=1, fill='both')
 
@@ -119,7 +115,7 @@ def decrypt_text():
 	encrypted = str(entry.get('1.0',tk.END))
 	encrypted= bytes(encrypted,'utf-8').strip()
 	encrypted = binascii.unhexlify(encrypted)
-	privKeyHex= str(tab4_display1.get('1.0',tk.END)).strip()
+	privKeyHex= str(tab3_display1.get('1.0',tk.END)).strip()
 	decrypted = decrypt(privKeyHex, encrypted)
 	result = 'Decrypted text:\n{}'.format(decrypted)
 	tab3_display.insert(tk.END,result)
@@ -146,9 +142,18 @@ def get_file_summary():
 	result = '\nSummary:{}'.format(final_text)
 	tab4_display_text.insert(tk.END,result)
 
+def save_summary1():
+	raw_text = str(tab4_display_text.get('1.0',tk.END))
+	final_text = text_summarizer(raw_text)
+	file_name = 'File_'+ timestr + '.txt'
+	with open(file_name, 'w') as f:
+		f.write(final_text)
+	result = '\nName of file: {}'.format(file_name)
+	tab4_display_text.insert(tk.END,result)
+
 ############################################ 
 def encrypt_file():
-	raw_text = str(displayed_file .get('1.0',tk.END))
+	raw_text = str(displayed_file.get('1.0',tk.END))
 	raw_text= bytes(raw_text,'utf-8')
 	privKey = generate_eth_key()
 	privKeyHex = privKey.to_hex()
@@ -161,10 +166,10 @@ def encrypt_file():
 	tab4_display1.insert(tk.END,result1)
 
 def decrypt_file():
-	encrypted = str(entry.get('1.0',tk.END))
+	encrypted = str(displayed_file.get('1.0',tk.END))
 	encrypted= bytes(encrypted,'utf-8').strip()
 	encrypted = binascii.unhexlify(encrypted)
-	privKeyHex= str(tab3_display1.get('1.0',tk.END)).strip()
+	privKeyHex= str(tab4_display1.get('1.0',tk.END)).strip()
 	decrypted = decrypt(privKeyHex, encrypted)
 	result = 'Decrypted text:\n{}'.format(decrypted)
 	tab4_display_text.insert(tk.END,result)
@@ -191,42 +196,38 @@ def get_url_summary():
 	result = '\nSummary:{}'.format(final_text)
 	tab5_display_text.insert(tk.END,result)	
 
-#####
-# COMPARER FUNCTIONS
-def clear_compare_text():
-	entry1.delete('1.0',END)
-
-def clear_compare_display_result():
-	tab6_display.delete('1.0',END)
-
-def use_spacy():
-	raw_text = str(entry1.get('1.0',tk.END))
+def save_summary2():
+	raw_text = str(tab5_display_text.get('1.0',tk.END))
 	final_text = text_summarizer(raw_text)
-	print(final_text)
-	result = '\nSpacy Summary:\n{}\n'.format(final_text)
-	tab6_display.insert(tk.END,result)
+	file_name = 'File_'+ timestr + '.txt'
+	with open(file_name, 'w') as f:
+		f.write(final_text)
+	result = '\nName of file: {}'.format(file_name)
+	tab5_display_text.insert(tk.END,result)
 
-def use_nltk():
-	raw_text = str(entry1.get('1.0',tk.END))
-	final_text = nltk_summarizer(raw_text)
-	print(final_text)
-	result = '\nNLTK Summary:\n{}\n'.format(final_text)
-	tab6_display.insert(tk.END,result)
+############################################ 
+def encrypt_url():
+	raw_text = str(url_display.get('1.0',tk.END))
+	raw_text= bytes(raw_text,'utf-8')
+	privKey = generate_eth_key()
+	privKeyHex = privKey.to_hex()
+	pubKeyHex = privKey.public_key.to_hex()
+	encrypted = encrypt(pubKeyHex, raw_text)
+	encrypted = binascii.hexlify(encrypted)
+	result = 'Encrypted text:\n{}'.format(encrypted)
+	tab5_display_text.insert(tk.END,result)
+	result1 = '{}'.format(privKeyHex)
+	tab5_display1.insert(tk.END,result1)
 
-def use_gensim():
-	raw_text = str(entry1.get('1.0',tk.END))
-	final_text = summarize(raw_text)
-	print(final_text)
-	result = '\nGensim Summary:\n{}\n'.format(final_text)
-	tab6_display.insert(tk.END,result)
+def decrypt_url():
+	encrypted = str(url_display.get('1.0',tk.END))
+	encrypted= bytes(encrypted,'utf-8').strip()
+	encrypted = binascii.unhexlify(encrypted)
+	privKeyHex= str(tab5_display1.get('1.0',tk.END)).strip()
+	decrypted = decrypt(privKeyHex, encrypted)
+	result = 'Decrypted text:\n{}'.format(decrypted)
+	tab5_display_text.insert(tk.END,result)
 
-def use_sumy():
-	raw_text = str(entry1.get('1.0',tk.END))
-	final_text = sumy_summary(raw_text)
-	print(final_text)
-	result = '\nSumy Summary:\n{}\n'.format(final_text)
-	tab6_display.insert(tk.END,result)
-		
 
 ################# Home tab
 about_label = Label(tab1,text="Our Project:\n\nEncryption/Decryption using ECIES",pady=5,padx=5)
@@ -309,13 +310,16 @@ tab4_display_text.config(state=NORMAL)
 b1=Button(tab4,text="Reset", width=12,command=clear_text_file)
 b1.grid(row=9,column=0,padx=10,pady=10)
 
+b5=Button(tab4,text="Save", command=save_summary1, width=12)
+b5.grid(row=9,column=1,padx=10,pady=10)
+
 b3=Button(tab4,text="Clear Result", width=12,command=clear_text_result)
 b3.grid(row=9,column=2,padx=10,pady=10)
 
 
 
 
-# Candidate URL TAB
+# URL TAB
 l1=Label(tab5,text="Enter URL To Summarize")
 l1.grid(row=1,column=0)
 
@@ -323,58 +327,40 @@ raw_entry=StringVar()
 url_entry=Entry(tab5,textvariable=raw_entry,width=30)
 url_entry.grid(row=1,column=1)
 
-# BUTTONS
-button1=Button(tab5,text="Reset",command=clear_url_entry, width=12,bg='#03A9F4')
-button1.grid(row=4,column=0,padx=10,pady=10)
-
 button2=Button(tab5,text="Get Text",command=get_text, width=12,bg='#03A9F4')
-button2.grid(row=4,column=1,padx=10,pady=10)
+button2.grid(row=1,column=2,padx=10,pady=10)
 
-button3=Button(tab5,text="Clear Result", command=clear_url_display,width=12,bg='#03A9F4')
-button3.grid(row=4,column=2,padx=10,pady=10)
+# Display Screen For URL text
+url_display = ScrolledText(tab5,height=8)
+url_display.grid(row=2,column=0, columnspan=3,padx=5,pady=5)
+
+button1=Button(tab5,text="Reset",command=clear_url_entry, width=12,bg='#03A9F4')
+button1.grid(row=3,column=0,padx=10,pady=10)
 
 button4=Button(tab5,text="Summarize",command=get_url_summary, width=12,bg='#03A9F4')
-button4.grid(row=5,column=1,padx=10,pady=10)
+button4.grid(row=3,column=2,padx=10,pady=10)
 
-# Display Screen For Result
-url_display = ScrolledText(tab5,height=10)
-url_display.grid(row=7,column=0, columnspan=3,padx=5,pady=5)
+button5=Button(tab5,text="Encrypt", command=encrypt_url, width=12)
+button5.grid(row=4,column=0,padx=10,pady=10)
 
+button6=Button(tab5,text="Decrypt", command=decrypt_url, width=12)
+button6.grid(row=4,column=2,padx=10,pady=10)
 
-tab5_display_text = ScrolledText(tab5,height=10)
-tab5_display_text.grid(row=10,column=0, columnspan=3,padx=5,pady=5)
+l=Label(tab5,text="Decryption private key")
+l.grid(row=5,column=1)
+tab5_display1 = ScrolledText(tab5, height=1)
+tab5_display1.grid(row=6,column=0, columnspan=3,padx=5,pady=5)
 
+l1=Label(tab5,text="Output")
+l1.grid(row=7,column=1)
+tab5_display_text = ScrolledText(tab5,height=8)
+tab5_display_text.grid(row=8,column=0, columnspan=3,padx=5,pady=5)
 
-# Alternate algorithms tab
-l1=Label(tab6,text="Enter Text To Summarize")
-l1.grid(row=1,column=1)
+button3=Button(tab5,text="Clear Result", command=clear_url_display,width=12,bg='#03A9F4')
+button3.grid(row=9,column=0,padx=10,pady=10)
 
-entry1=ScrolledText(tab6,height=10)
-entry1.grid(row=2,column=0,columnspan=3,padx=5,pady=5)
-
-# BUTTONS
-button1=Button(tab6,text="Reset",command=clear_compare_text, width=12,bg='#03A9F4')
-button1.grid(row=4,column=0,padx=10,pady=10)
-
-button2=Button(tab6,text="SpaCy",command=use_spacy, width=12,bg='red')
-button2.grid(row=4,column=1,padx=10,pady=10)
-
-button3=Button(tab6,text="Clear Result", command=clear_compare_display_result,width=12,bg='#03A9F4')
-button3.grid(row=5,column=0,padx=10,pady=10)
-
-button4=Button(tab6,text="NLTK",command=use_nltk, width=12,bg='#03A9F4')
-button4.grid(row=4,column=2,padx=10,pady=10)
-
-button4=Button(tab6,text="Gensim",command=use_gensim, width=12,bg='#03A9F4')
-button4.grid(row=5,column=1,padx=10,pady=10)
-
-button4=Button(tab6,text="Sumy",command=use_sumy, width=12,bg='#03A9F4')
-button4.grid(row=5,column=2,padx=10,pady=10)
-
-
-# Display Screen For Result
-tab6_display = ScrolledText(tab6,height=10)
-tab6_display.grid(row=7,column=0, columnspan=3,padx=5,pady=5)
+b5=Button(tab5,text="Save", command=save_summary2, width=12)
+b5.grid(row=9,column=2,padx=10,pady=10)
 
 
 window.mainloop()
