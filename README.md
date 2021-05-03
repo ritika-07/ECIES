@@ -21,5 +21,5 @@ This document is then encrypted using highly secure ECC algorithm to ensure that
 #### ECIES
 <img src="https://github.com/ritika-07/Infosec/blob/master/ecc.png" width=600>
 
-### Web Scraping and Text Summarisation
+#### Web Scraping and Text Summarisation
 <img src="https://github.com/ritika-07/Infosec/blob/master/algo.png" width=600>
